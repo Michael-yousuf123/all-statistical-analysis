@@ -1,0 +1,108 @@
+---
+title: "abtest"
+format: html
+editor: visual
+---
+
+# A/B Testing
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+### ***Import Necessary Libraries***
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+library(readr, quietly = TRUE)
+library(dplyr, quietly = TRUE)
+library(ggplot2, quietly = TRUE)
+library(lubridate, quietly = TRUE)
+library(pwr, quietly = TRUE)
+library(plyr, quietly = TRUE)
+```
+
+### *Exploratory Data Analysis*
+
+```{r}
+
+df = read_csv("/home/miki/Desktop/Miki/R/all-statistical-analysis/ABtest/Cookie_Cats_cleaned_v01.csv")
+ 
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+spec(df)
+```
+
+```{r}
+#print(df[duplicated(df),])
+df <- df[!duplicated(df, fromLast = T), ]
+```
+
+```{r}
+head(df)
+```
+
+```{r}
+which(is.na(df))
+```
+
+```{r}
+summary(df)
+```
+
+```{r}
+library(moments)
+##userid = col_double(),
+  #version = col_character(),
+  #sum_gamerounds = col_double(),
+  #retention_1 = col_logical(),
+  #retention_7 = col_logical()
+#df$sum_gamerounds.skew()
+#data_dis.kurtosis()
+x <- df[,3, drop=FALSE]
+#x.skew()
+skewness(x, na.rm = TRUE)
+kurtosis(x, na.rm = TRUE)
+#skewness(df)
+#kurtosis(df)
+#hist(x, col='steelblue')
+mx <- mean(df$sum_gamerounds)
+hist(df$sum_gamerounds)
+abline(v = mx, col = "blue", lwd = 2)
+```
+
+```{r}
+
+```
+
+```{r}
+# Use the table() function to get the counts of each species
+group_counts <- table(df$retention_7)
+# Calculate the total count using the sum() function
+total_count <- sum(group_counts)
+# Divide each count by the total count and multiply by 100 to get the percentage
+percentage_by_group <- (group_counts / total_count) * 100
+percentage_by_group
+```
+
+```{r}
+# Use the table() function to get the counts of each species
+group_counts <- table(df$retention_1)
+# Calculate the total count using the sum() function
+total_count <- sum(group_counts)
+# Divide each count by the total count and multiply by 100 to get the percentage
+percentage_by_group <- (group_counts / total_count) * 100
+percentage_by_group
+
+```
+
+```{r}
+# Create a cross-tabulation using the table() function
+crosstab <- table(df$version, 
+                   df$retention_7)
+
+# Print the cross-tabulation
+print(crosstab)
+```
