@@ -106,3 +106,14 @@ crosstab <- table(df$version,
 # Print the cross-tabulation
 print(crosstab)
 ```
+
+```{r}
+outlier <- function(x){
+  IQR1 <- x$col.quantile(0.25)
+  IQR2 <- x$col.quantile(0.75)
+  IQR <- IQR2 - IQR1
+  lower_bound <- IQR1-1.5*IQR
+  upper_bound <- IQR2-1.5*IQR
+  
+}
+```
