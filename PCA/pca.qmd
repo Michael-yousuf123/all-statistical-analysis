@@ -1,0 +1,200 @@
+---
+title: "PCA"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+suppressPackageStartupMessages({
+    library(readr)
+    library(ggplot2)
+    library(tidyverse)
+    library(cowplot)
+    library(ggrepel)
+    library(pheatmap)
+})
+theme_set(theme_cowplot())
+options(repr.plot.width=9,repr.plot.height=7)
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+```{r}
+df <- read.csv('darlingtonia_californica.csv')
+```
+
+```{r}
+head(df)
+```
+
+```{r}
+df.pca <- df %>%
+select(-c(site, plant))
+```
+
+```{r}
+df.pca
+```
+
+### Checking the Assumption of PCA
+
+##### 🇺🇲 Data should be Numeric and Continuous
+
+```{r}
+str(df.pca)
+```
+
+##### 🇺🇲 Variables should be Linearly Related
+
+```{r}
+#data_long <- pivot_longer(data, cols = c(insert columns you want),names_to = 'key')
+```
+
+```{r}
+
+#The 
+#The 
+#The data should be approximately normally distributed
+#The 
+```
+
+```{r}
+plot <- df %>% 
+  gather(variable, value, -site) %>% 
+  ggplot(aes(sample = value, color = variable)) +
+  geom_abline() +
+  stat_qq() 
+
+# All in one
+plot
+```
+
+##### 🇺🇲 Variables should be on a similar scale
+
+```{r}
+scaled.df <- scale(df.pca)
+```
+
+```{r}
+S <- cov(scaled.df)
+```
+
+```{r}
+S
+```
+
+```{r}
+library(corrplot)
+corrplot(S, method="circle")
+```
+
+```{r}
+S.eigen <- eigen(S)
+```
+
+```{r}
+S.eigen$values %>% round(3) # Eigenvalues
+```
+
+```{r}
+sum(S.eigen$values)
+```
+
+```{r}
+S.eigen.prop <- S.eigen$values / sum(S.eigen$values)
+```
+
+```{r}
+S.eigen.prop %>% round(3) # rounding for display
+```
+
+```{r}
+S.eigen$vectors %>% round(2) # 1 vector per eigenvalue
+```
+
+```{r}
+loadings <- S.eigen$vectors[ , 1:3] %>%
+data.frame(row.names = colnames(scaled.df)) %>%
+rename("PC1" = X1, "PC2" = X2, "PC3" = X3) %>%
+round(digits = 3)
+
+loadings
+```
+
+```{r}
+PC1 <- scaled.df %*% S.eigen$vectors[,1]
+
+PC1 %>% head()
+```
+
+```{r}
+PC.scores <- scaled.df %*% S.eigen$vectors
+```
+
+```{r}
+cor(PC.scores) %>% round(3)
+```
+
+```{r}
+df1.pca <- princomp(df.pca, cor = TRUE)
+```
+
+```{r}
+summary(df1.pca, loadings = TRUE, cutoff = 0)
+```
+
+```{r}
+plot(df1.pca)
+```
+
+```{r}
+df2.pca <- prcomp(df.pca, scale. = TRUE) # Note scale. argument
+```
+
+```{r}
+print(df2.pca)
+```
+
+```{r}
+biplot(df1.pca)
+```
+
+```{r}
+library(ggbiplot)
+library(ggfortify)
+```
+
+```{r}
+#ggbiplot(df1.pca)
+ggplot2::autoplot(df1.pca,  label = TRUE, loadings.label = TRUE)
+```
+
+```{r}
+ggbiplot(df1.pca) + 
+  #geom_point(aes(colour = df$site)) +
+  labs(colour = "Site", x = "PC1(Size; 44.4%)", y = "PC2 (Shape; 17.7%)") +
+  theme_bw()
+```
+
+```{r}
+
+```
+
+```{r}
+
+ggbiplot(df1.pca)
+```
