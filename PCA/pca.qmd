@@ -34,7 +34,7 @@ options(repr.plot.width=9,repr.plot.height=7)
 The `echo: false` option disables the printing of code (only output is displayed).
 
 ```{r}
-df <- read.csv('darlingtonia_californica.csv')
+df <- read.csv('/home/miki/Desktop/Miki/R/all-statistical-analysis/PCA/data/darlingtonia_californica.csv')
 ```
 
 ```{r}
@@ -180,18 +180,7 @@ library(ggfortify)
 
 ```{r}
 #ggbiplot(df1.pca)
-ggplot2::autoplot(df1.pca,  label = TRUE, loadings.label = TRUE)
-```
-
-```{r}
-ggbiplot(df1.pca) + 
-  #geom_point(aes(colour = df$site)) +
-  labs(colour = "Site", x = "PC1(Size; 44.4%)", y = "PC2 (Shape; 17.7%)") +
-  theme_bw()
-```
-
-```{r}
-
+ggplot2::autoplot(df1.pca,  label = TRUE, loadings.label = TRUE
 ```
 
 ```{r}
